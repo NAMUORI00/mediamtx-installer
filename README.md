@@ -41,7 +41,7 @@ wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx
 ### 포트 변경 예시
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh | sudo RTMP_PORT=1936 HLS_PORT=8080 bash -s -- -y
+wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo RTMP_PORT=1936 HLS_PORT=8080 bash install-mediamtx.sh -y
 ```
 
 ## 설치 후 사용법
