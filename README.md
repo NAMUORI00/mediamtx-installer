@@ -8,24 +8,24 @@ Ubuntu 24.04 + Docker 기반 저지연 스트리밍 서버를 한 줄 명령어�
 OBS (RTMP) → MediaMTX → VLC (RTSP) / 브라우저 (HLS)
 ```
 
-## 한 줄 설치
+## Installation
 
-### 대화형 모드 (권장)
+### Interactive Mode (Recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh | sudo bash
+wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo bash install-mediamtx.sh
 ```
 
-### 비대화형 모드 (기본값 사용)
+### Non-interactive Mode (Use defaults)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh | sudo bash -s -- -y
+wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo bash install-mediamtx.sh -y
 ```
 
-### 스트림 키 지정
+### Specify Stream Key
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh | sudo STREAM_KEY=mySecretKey bash -s -- -y
+wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo STREAM_KEY=mySecretKey bash install-mediamtx.sh -y
 ```
 
 ## 설정 옵션
