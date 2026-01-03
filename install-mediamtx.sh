@@ -517,6 +517,7 @@ main() {
     echo "       MediaMTX Streaming Server Installation Script"
     echo "       Ubuntu 24.04 + Docker"
     echo "============================================================"
+    echo "                        made by Ori_M"
     echo ""
 
     # Pre-checks
