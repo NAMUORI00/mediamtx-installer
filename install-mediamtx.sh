@@ -463,6 +463,8 @@ print_completion_message() {
     echo ""
     echo -e "${BLUE}[Config File]${NC} ${INSTALL_DIR}/credentials.txt"
     echo ""
+    echo "                        made by Ori_M"
+    echo ""
 }
 
 # Function: Show usage
