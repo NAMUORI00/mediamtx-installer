@@ -76,18 +76,33 @@ generate_random_string() {
     tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c "$length"
 }
 
-# Function: Get server IP
+# Function: Get server IP (IPv4 preferred)
 get_server_ip() {
-    # Try public IP
     local public_ip
-    public_ip=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || curl -s --max-time 5 icanhazip.com 2>/dev/null || echo "")
 
+    # Try public IPv4 first (force IPv4 with -4 flag)
+    public_ip=$(curl -4 -s --max-time 5 ifconfig.me 2>/dev/null)
     if [ -n "$public_ip" ]; then
         echo "$public_ip"
-    else
-        # Use local IP
-        hostname -I | awk '{print $1}'
+        return
     fi
+
+    # Fallback: try icanhazip with IPv4
+    public_ip=$(curl -4 -s --max-time 5 icanhazip.com 2>/dev/null)
+    if [ -n "$public_ip" ]; then
+        echo "$public_ip"
+        return
+    fi
+
+    # Fallback: try api.ipify.org (IPv4 only service)
+    public_ip=$(curl -s --max-time 5 https://api.ipify.org 2>/dev/null)
+    if [ -n "$public_ip" ]; then
+        echo "$public_ip"
+        return
+    fi
+
+    # Last resort: use local IPv4 address
+    hostname -I | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -1
 }
 
 # Function: Install Docker
