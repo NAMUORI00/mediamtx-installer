@@ -385,7 +385,7 @@ VLC (SRT): srt://${server_ip}:${SRT_PORT}?streamid=read:live
 Browser: http://${server_ip}:${HLS_PORT}/live
 
 [SRT Streaming (Low-latency)]
-OBS: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}
+OBS: srt://${server_ip}:${SRT_PORT}?streamid=publish:live
 VLC: srt://${server_ip}:${SRT_PORT}?streamid=read:live
 
 [Management API]
@@ -466,7 +466,7 @@ print_completion_message() {
     echo "   Stream Key: (included in URL, leave empty in OBS)"
     echo ""
     echo -e "${GREEN}[OBS Settings - SRT (Low-latency)]${NC}"
-    echo "   Server: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}"
+    echo "   Server: srt://${server_ip}:${SRT_PORT}?streamid=publish:live"
     echo ""
     echo -e "${GREEN}[Viewing]${NC}"
     echo "   VLC (RTSP): rtsp://${server_ip}:${RTSP_PORT}/live"
