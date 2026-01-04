@@ -21,6 +21,7 @@ INSTALL_DIR="/opt/mediamtx"
 DEFAULT_RTMP_PORT=1935
 DEFAULT_RTSP_PORT=8554
 DEFAULT_HLS_PORT=8888
+DEFAULT_SRT_PORT=8890
 DEFAULT_API_PORT=9997
 
 # Non-interactive mode flag
@@ -169,6 +170,7 @@ interactive_setup() {
         RTMP_PORT=${RTMP_PORT:-$DEFAULT_RTMP_PORT}
         RTSP_PORT=${RTSP_PORT:-$DEFAULT_RTSP_PORT}
         HLS_PORT=${HLS_PORT:-$DEFAULT_HLS_PORT}
+        SRT_PORT=${SRT_PORT:-$DEFAULT_SRT_PORT}
         API_PORT=${API_PORT:-$DEFAULT_API_PORT}
         if [ -z "$STREAM_KEY" ]; then
             STREAM_KEY=$(generate_random_string 16)
@@ -186,6 +188,10 @@ interactive_setup() {
         # HLS port
         read -p "HLS port (Web browser) [default: $DEFAULT_HLS_PORT]: " HLS_PORT
         HLS_PORT=${HLS_PORT:-$DEFAULT_HLS_PORT}
+
+        # SRT port
+        read -p "SRT port (Low-latency streaming) [default: $DEFAULT_SRT_PORT]: " SRT_PORT
+        SRT_PORT=${SRT_PORT:-$DEFAULT_SRT_PORT}
 
         # API port
         read -p "API port (Management) [default: $DEFAULT_API_PORT]: " API_PORT
@@ -214,6 +220,7 @@ interactive_setup() {
     echo "  RTMP port: $RTMP_PORT"
     echo "  RTSP port: $RTSP_PORT"
     echo "  HLS port: $HLS_PORT"
+    echo "  SRT port: $SRT_PORT"
     echo "  API port: $API_PORT"
     echo "  Stream key: $STREAM_KEY"
 }
@@ -265,6 +272,12 @@ api: yes
 apiAddress: :${API_PORT}
 
 ###############################################
+# SRT (Low-latency streaming)
+###############################################
+srt: yes
+srtAddress: :${SRT_PORT}
+
+###############################################
 # Performance optimization (Low-resource)
 ###############################################
 writeQueueSize: 256
@@ -276,7 +289,6 @@ writeTimeout: 10s
 # Disable unnecessary protocols (Save resources)
 ###############################################
 webrtc: no
-srt: no
 
 ###############################################
 # Authentication settings
@@ -368,17 +380,23 @@ Server URL: rtmp://${server_ip}:${RTMP_PORT}/live?user=publisher&pass=${STREAM_K
 Stream Key: (included in URL)
 
 [Viewing]
-VLC: rtsp://${server_ip}:${RTSP_PORT}/live
+VLC (RTSP): rtsp://${server_ip}:${RTSP_PORT}/live
+VLC (SRT): srt://${server_ip}:${SRT_PORT}?streamid=read:live
 Browser: http://${server_ip}:${HLS_PORT}/live
+
+[SRT Streaming (Low-latency)]
+OBS: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}
+VLC: srt://${server_ip}:${SRT_PORT}?streamid=read:live
 
 [Management API]
 URL: http://${server_ip}:${API_PORT}/v3/paths/list
 
 [Port Info]
-RTMP: ${RTMP_PORT}
-RTSP: ${RTSP_PORT}
-HLS: ${HLS_PORT}
-API: ${API_PORT}
+RTMP: ${RTMP_PORT} (TCP)
+RTSP: ${RTSP_PORT} (TCP)
+HLS: ${HLS_PORT} (TCP)
+SRT: ${SRT_PORT} (UDP)
+API: ${API_PORT} (TCP)
 
 ============================================
 EOF
@@ -395,12 +413,13 @@ configure_firewall() {
         ufw allow "$RTMP_PORT"/tcp comment 'MediaMTX RTMP'
         ufw allow "$RTSP_PORT"/tcp comment 'MediaMTX RTSP'
         ufw allow "$HLS_PORT"/tcp comment 'MediaMTX HLS'
+        ufw allow "$SRT_PORT"/udp comment 'MediaMTX SRT'
         ufw allow "$API_PORT"/tcp comment 'MediaMTX API'
 
         log_success "Firewall ports opened"
     else
         log_warn "UFW not installed. Please configure firewall manually."
-        echo "Required ports: $RTMP_PORT, $RTSP_PORT, $HLS_PORT, $API_PORT (TCP)"
+        echo "Required ports: $RTMP_PORT, $RTSP_PORT, $HLS_PORT (TCP), $SRT_PORT (UDP), $API_PORT (TCP)"
     fi
 }
 
@@ -442,12 +461,16 @@ print_completion_message() {
     echo "       MediaMTX Streaming Server Installation Complete!"
     echo "============================================================"
     echo ""
-    echo -e "${GREEN}[OBS Settings]${NC}"
+    echo -e "${GREEN}[OBS Settings - RTMP]${NC}"
     echo "   Server URL: rtmp://${server_ip}:${RTMP_PORT}/live?user=publisher&pass=${STREAM_KEY}"
     echo "   Stream Key: (included in URL, leave empty in OBS)"
     echo ""
+    echo -e "${GREEN}[OBS Settings - SRT (Low-latency)]${NC}"
+    echo "   Server: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}"
+    echo ""
     echo -e "${GREEN}[Viewing]${NC}"
-    echo "   VLC: rtsp://${server_ip}:${RTSP_PORT}/live"
+    echo "   VLC (RTSP): rtsp://${server_ip}:${RTSP_PORT}/live"
+    echo "   VLC (SRT): srt://${server_ip}:${SRT_PORT}?streamid=read:live"
     echo "   Browser: http://${server_ip}:${HLS_PORT}/live"
     echo ""
     echo -e "${GREEN}[Management]${NC}"
@@ -479,6 +502,7 @@ show_usage() {
     echo "  RTMP_PORT       RTMP port (default: 1935)"
     echo "  RTSP_PORT       RTSP port (default: 8554)"
     echo "  HLS_PORT        HLS port (default: 8888)"
+    echo "  SRT_PORT        SRT port (default: 8890)"
     echo "  API_PORT        API port (default: 9997)"
     echo "  STREAM_KEY      Stream key (default: auto-generated)"
     echo ""
