@@ -54,3 +54,4 @@ webrtc: no
 ###############################################
 paths:
   all:
+    srtPublishPassphrase: testkey123

@@ -324,9 +324,11 @@ authInternalUsers:
 
 ###############################################
 # Stream path settings
+# SRT uses same stream key as RTMP for encryption
 ###############################################
 paths:
   all:
+    srtPublishPassphrase: ${STREAM_KEY}
 EOF
 
     log_success "mediamtx.yml created"
@@ -385,7 +387,7 @@ VLC (SRT): srt://${server_ip}:${SRT_PORT}?streamid=read:live
 Browser: http://${server_ip}:${HLS_PORT}/live
 
 [SRT Streaming (Low-latency)]
-OBS: srt://${server_ip}:${SRT_PORT}?streamid=publish:live
+OBS: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}
 VLC: srt://${server_ip}:${SRT_PORT}?streamid=read:live
 
 [Management API]
@@ -466,7 +468,7 @@ print_completion_message() {
     echo "   Stream Key: (included in URL, leave empty in OBS)"
     echo ""
     echo -e "${GREEN}[OBS Settings - SRT (Low-latency)]${NC}"
-    echo "   Server: srt://${server_ip}:${SRT_PORT}?streamid=publish:live"
+    echo "   Server: srt://${server_ip}:${SRT_PORT}?streamid=publish:live&passphrase=${STREAM_KEY}"
     echo ""
     echo -e "${GREEN}[Viewing]${NC}"
     echo "   VLC (RTSP): rtsp://${server_ip}:${RTSP_PORT}/live"
