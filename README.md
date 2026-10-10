@@ -1,108 +1,78 @@
 # MediaMTX 스트리밍 서버 설치 스크립트
 
-Ubuntu 24.04 + Docker 기반 저지연 스트리밍 서버를 한 줄 명령어로 설치합니다.
+Ubuntu 24.04에 Docker 기반 MediaMTX 저지연 스트리밍 서버를 명령 한 줄로 설치합니다. OBS로 송출하고 VLC나 웹 브라우저로 시청하는 구성을 1GB RAM 서버에서도 돌아가도록 맞췄습니다.
 
-## 워크플로우
+![MediaMTX 설치 스크립트 구성](docs/assets/mediamtx-overview.svg)
 
-```
-OBS (RTMP) → MediaMTX → VLC (RTSP) / 브라우저 (HLS)
-```
+## 주요 기능
 
-## Installation
+- 스트림 키 인증: 송출만 인증하고 시청은 자유
+- RTMP, SRT 송출과 RTSP, SRT, 저지연 HLS 시청 지원
+- Docker 자동 설치, UFW 방화벽 포트 자동 개방
+- 컨테이너 메모리 512MB 제한 등 저사양 서버 설정
 
-### Interactive Mode (Recommended)
+## 설치
 
-```bash
-wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo bash install-mediamtx.sh
-```
-
-### Non-interactive Mode (Use defaults)
+스크립트를 내려받은 뒤 원하는 방식으로 실행합니다.
 
 ```bash
-wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo bash install-mediamtx.sh -y
+wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh
 ```
 
-### Specify Stream Key
+| 방식 | 명령 |
+| --- | --- |
+| 대화형 설치 (권장) | `sudo bash install-mediamtx.sh` |
+| 기본값으로 설치 | `sudo bash install-mediamtx.sh -y` |
+| 포트 지정 | `sudo RTMP_PORT=1936 HLS_PORT=8080 bash install-mediamtx.sh -y` |
+| 스트림 키 지정 | `sudo STREAM_KEY=<스트림 키> bash install-mediamtx.sh -y` |
+| 도움말 | `bash install-mediamtx.sh -h` |
 
-```bash
-wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo STREAM_KEY=mySecretKey bash install-mediamtx.sh -y
-```
+스트림 키는 비워 두면 16자로 자동 생성되며, 설치가 끝나면 화면과 `/opt/mediamtx/credentials.txt`(root만 읽기 가능)에 표시됩니다. 직접 지정하면 명령이 셸 기록에 남으므로 자동 생성을 권장합니다. 같은 키를 SRT 암호로도 쓰기 때문에 직접 지정할 때는 10자 이상으로 정합니다.
 
 ## 설정 옵션
 
-| 환경변수 | 기본값 | 설명 |
-|----------|--------|------|
-| `RTMP_PORT` | 1935 | OBS 송출 포트 |
-| `RTSP_PORT` | 8554 | VLC 재생 포트 |
-| `HLS_PORT` | 8888 | 웹 브라우저 포트 |
-| `API_PORT` | 9997 | 관리 API 포트 |
-| `STREAM_KEY` | (자동생성) | OBS 스트림 키 |
+| 환경 변수 | 기본값 | 설명 |
+| --- | --- | --- |
+| `RTMP_PORT` | 1935 | OBS 송출 (TCP) |
+| `RTSP_PORT` | 8554 | VLC 재생 (TCP) |
+| `HLS_PORT` | 8888 | 웹 브라우저 재생 (TCP) |
+| `SRT_PORT` | 8890 | 저지연 송출과 재생 (UDP) |
+| `API_PORT` | 9997 | 관리 API (TCP, 내부망에서만 접근) |
+| `STREAM_KEY` | 자동 생성 | 송출 인증 키 |
 
-### 포트 변경 예시
+## 사용 방법
 
-```bash
-wget -O install-mediamtx.sh https://raw.githubusercontent.com/NAMUORI00/mediamtx-installer/master/install-mediamtx.sh && sudo RTMP_PORT=1936 HLS_PORT=8080 bash install-mediamtx.sh -y
+**OBS 송출**: 설치 후 출력되는 서버 URL을 OBS에 넣고 스트림 키 칸은 비워 둡니다.
+
+```text
+rtmp://<서버 IP>:1935/live?user=publisher&pass=<스트림 키>
 ```
 
-## 설치 후 사용법
+**시청**
 
-### OBS 설정
+| 방법 | 주소 |
+| --- | --- |
+| VLC (RTSP) | `rtsp://<서버 IP>:8554/live` |
+| VLC (SRT) | `srt://<서버 IP>:8890?streamid=read:live` |
+| 웹 브라우저 | `http://<서버 IP>:8888/live` |
 
-설치 완료 후 출력되는 URL을 OBS에 입력합니다:
-
-- **서버 URL**: `rtmp://서버IP:1935/live?user=publisher&pass=스트림키`
-- **스트림 키**: (URL에 포함됨, 비워두세요)
-
-### 시청 방법
-
-| 방법 | URL |
-|------|-----|
-| VLC | `rtsp://서버IP:8554/live` |
-| 브라우저 | `http://서버IP:8888/live` |
-
-### VLC 저지연 설정
-
-1. 도구 > 환경설정
-2. 입력/코덱 > 네트워크 캐싱 = **50ms**
+VLC에서 지연을 줄이려면 도구 > 환경설정 > 입력/코덱에서 네트워크 캐싱을 50ms로 낮춥니다.
 
 ## 서비스 관리
 
 ```bash
-# 시작
-docker compose -f /opt/mediamtx/docker-compose.yml up -d
-
-# 중지
-docker compose -f /opt/mediamtx/docker-compose.yml down
-
-# 로그 확인
-docker logs -f mediamtx
-
-# 상태 확인
-docker ps | grep mediamtx
+docker compose -f /opt/mediamtx/docker-compose.yml up -d    # 시작
+docker compose -f /opt/mediamtx/docker-compose.yml down     # 중지
+docker logs -f mediamtx                                     # 로그
 ```
 
-## 설정 파일 위치
+설정 파일은 `/opt/mediamtx/` 아래 `mediamtx.yml`, `docker-compose.yml`, `credentials.txt`로 생성됩니다.
 
-| 파일 | 경로 |
-|------|------|
-| 설정 파일 | `/opt/mediamtx/mediamtx.yml` |
-| Docker Compose | `/opt/mediamtx/docker-compose.yml` |
-| 접속 정보 | `/opt/mediamtx/credentials.txt` |
+## 요구 사항
 
-## 시스템 요구사항
-
-- **OS**: Ubuntu 24.04
-- **메모리**: 1GB RAM (512MB 제한)
-- **CPU**: 2 vCPU 권장
-- **네트워크**: TCP 포트 1935, 8554, 8888, 9997
-
-## 기능
-
-- 스트림 키 인증 (송출만 인증, 시청은 자유)
-- Low-Latency HLS 지원
-- Docker 자동 설치
-- UFW 방화벽 자동 설정
-- 1GB RAM 환경 최적화
+- Ubuntu 24.04, root 권한
+- 메모리 1GB 이상, 2 vCPU 권장
+- 위 포트에 대한 외부 접근 허용
 
 ## 라이선스
 

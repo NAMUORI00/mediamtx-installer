@@ -1,0 +1,69 @@
+<svg width="1280" height="470" viewBox="0 0 1280 470" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OBS가 RTMP나 SRT로 스트림 키를 붙여 송출하면 Docker의 MediaMTX가 받아 VLC에는 RTSP와 SRT로, 브라우저에는 저지연 HLS로 전달한다. 설치 스크립트는 환경 확인, Docker 설치, 설정 파일 생성, 방화벽 개방, 컨테이너 실행, 접속 정보 저장 순서로 진행된다.">
+<title>MediaMTX 설치 스크립트 구성</title>
+<line x1="16.0" y1="262.0" x2="1264.0" y2="262.0" stroke="#7d8590" stroke-width="1" stroke-opacity="0.28" stroke-linecap="round"/>
+<text x="40.0" y="130.0" fill="#2f81f7" font-size="18" font-weight="800" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif" transform="rotate(-90 40 130.0)" letter-spacing="1">스트리밍</text>
+<line x1="16.0" y1="454.0" x2="1264.0" y2="454.0" stroke="#7d8590" stroke-width="1" stroke-opacity="0.28" stroke-linecap="round"/>
+<text x="40.0" y="358.0" fill="#7d8590" font-size="18" font-weight="800" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif" transform="rotate(-90 40 358.0)" letter-spacing="1">설치 단계</text>
+<rect x="90.0" y="88.0" width="260.0" height="84.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(106.0,118.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M2,7 h14 v11 h-14 z M16,10 l6,-3 v11 l-6,-3"/></g>
+<text x="240.0" y="119.0" fill="#7d8590" font-size="18" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">OBS 송출</text>
+<text x="240.0" y="144.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">RTMP 1935, SRT 8890</text>
+<rect x="440.0" y="74.0" width="320.0" height="112.0" rx="14" fill="none" stroke="#2f81f7" stroke-opacity="0.9" stroke-width="1.8"/>
+<g transform="translate(456.0,118.0) scale(1.000)" stroke="#2f81f7" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M3,3 h18 v7 h-18 z M3,14 h18 v7 h-18 z M7,6.5 h.01 M7,17.5 h.01"/></g>
+<text x="620.0" y="119.0" fill="#2f81f7" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">MediaMTX</text>
+<text x="620.0" y="144.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">Docker, 메모리 512MB 제한</text>
+<path d="M350.0,130.0 L434.0,130.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M426.1,134.2 L434.0,130.0 L426.1,125.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="392.0" y="196.0" fill="#7d8590" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">스트림 키 인증</text>
+<rect x="860.0" y="40.0" width="360.0" height="84.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(876.0,70.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M2,3 h20 v13 h-20 z M9,20 h6 M12,16 v4"/></g>
+<text x="1060.0" y="71.0" fill="#7d8590" font-size="18" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">VLC</text>
+<text x="1060.0" y="96.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">RTSP 8554, SRT 8890</text>
+<rect x="860.0" y="144.0" width="360.0" height="84.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(876.0,174.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12,2 a10,10 0 1 0 0.01,0 z M2,12 h20 M12,2 a15,10 0 0 1 0,20 a15,10 0 0 1 0,-20"/></g>
+<text x="1060.0" y="175.0" fill="#7d8590" font-size="18" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">웹 브라우저</text>
+<text x="1060.0" y="200.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">저지연 HLS 8888</text>
+<path d="M760.0,130.0 L810.0,130.0 L810.0,82.0 L854.0,82.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M846.1,86.2 L854.0,82.0 L846.1,77.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M810.0,130.0 L810.0,186.0 L854.0,186.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M846.1,190.2 L854.0,186.0 L846.1,181.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1040.0" y="244.0" fill="#7d8590" font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">시청은 인증 없이 가능</text>
+<rect x="90.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(106.0,342.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12,2 a10,10 0 1 0 0.01,0 z M7,12 l3.5,3.5 L17,9"/></g>
+<text x="195.0" y="343.0" fill="#7d8590" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">환경 확인</text>
+<text x="195.0" y="368.0" fill="#7d8590" font-size="13" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">root, Ubuntu</text>
+<path d="M260.0,354.0 L279.0,354.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M271.1,358.2 L279.0,354.0 L271.1,349.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="284.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(300.0,342.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12,2 l9,5 v10 l-9,5 l-9,-5 v-10 z M3,7 l9,5 l9,-5 M12,12 v10"/></g>
+<text x="389.0" y="355.0" fill="#7d8590" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">Docker 설치</text>
+<path d="M454.0,354.0 L473.0,354.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M465.1,358.2 L473.0,354.0 L465.1,349.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="478.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(494.0,342.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M5,2 h9 l5,5 v15 h-14 z M14,2 v5 h5 M8,12 h8 M8,16 h8"/></g>
+<text x="583.0" y="343.0" fill="#7d8590" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">설정 생성</text>
+<text x="583.0" y="368.0" fill="#7d8590" font-size="13" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">yml, compose</text>
+<path d="M648.0,354.0 L667.0,354.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M659.1,358.2 L667.0,354.0 L659.1,349.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="672.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(688.0,342.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12,2 l8,3 v6 c0,5 -3.5,9 -8,11 c-4.5,-2 -8,-6 -8,-11 v-6 z M8.5,12 l2.5,2.5 l4.5,-5"/></g>
+<text x="777.0" y="343.0" fill="#7d8590" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">방화벽 개방</text>
+<text x="777.0" y="368.0" fill="#7d8590" font-size="13" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">UFW</text>
+<path d="M842.0,354.0 L861.0,354.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M853.1,358.2 L861.0,354.0 L853.1,349.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="866.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#7d8590" stroke-opacity="0.6" stroke-width="1.6"/>
+<g transform="translate(882.0,342.0) scale(1.000)" stroke="#7d8590" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M3,3 h18 v7 h-18 z M3,14 h18 v7 h-18 z M7,6.5 h.01 M7,17.5 h.01"/></g>
+<text x="971.0" y="355.0" fill="#7d8590" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">컨테이너 실행</text>
+<path d="M1036.0,354.0 L1055.0,354.0" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1047.1,358.2 L1055.0,354.0 L1047.1,349.8" stroke="#7d8590" stroke-opacity="0.9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1060.0" y="316.0" width="170.0" height="76.0" rx="14" fill="none" stroke="#2f81f7" stroke-opacity="0.9" stroke-width="1.8"/>
+<g transform="translate(1076.0,342.0) scale(1.000)" stroke="#2f81f7" stroke-width="1.90" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M8,9 a5,5 0 1 0 0.01,0 z M12,12 h10 M18,12 v4 M21,12 v3"/></g>
+<text x="1165.0" y="343.0" fill="#2f81f7" font-size="16" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">접속 정보</text>
+<text x="1165.0" y="368.0" fill="#7d8590" font-size="13" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif">credentials.txt</text>
+<rect x="452.4" y="410.0" width="269.6" height="28.0" rx="14.0" fill="none" stroke="#7d8590" stroke-opacity="0.7" stroke-width="1.2"/>
+<text x="587.2" y="425.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace">sudo bash install-mediamtx.sh</text>
+<rect x="732.0" y="410.0" width="42.8" height="28.0" rx="14.0" fill="none" stroke="#7d8590" stroke-opacity="0.7" stroke-width="1.2"/>
+<text x="753.4" y="425.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace">-y</text>
+<rect x="784.8" y="410.0" width="42.8" height="28.0" rx="14.0" fill="none" stroke="#7d8590" stroke-opacity="0.7" stroke-width="1.2"/>
+<text x="806.2" y="425.0" fill="#7d8590" font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace">-h</text>
+</svg>
